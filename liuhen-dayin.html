@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>留痕打印 - 优化版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    background: #F5F6FA;
+    color: #262626;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #F5F6FA;
+    position: relative;
+    overflow: hidden;
+    border-radius: 40px;
+    box-shadow: 0 0 0 8px #1a1a1a, 0 0 0 10px #333, 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  /* 状态栏 */
+  .status-bar {
+    height: 44px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+  }
+  .status-bar .time { font-size: 14px; font-weight: 700; }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+  .status-bar .icons svg { width: 16px; height: 16px; }
+
+  /* 导航栏 */
+  .nav-bar {
+    height: 44px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 0.5px solid #F0F0F0;
+    position: relative;
+  }
+  .nav-bar .back-btn {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .nav-bar .back-btn svg { width: 20px; height: 20px; color: #333; }
+  .nav-bar .title {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-size: 17px; font-weight: 600; color: #1A1A1A;
+  }
+
+  /* 主内容区 */
+  .content {
+    height: calc(812px - 44px - 44px - 68px);
+    overflow-y: auto;
+    padding: 12px 16px 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  /* 通用卡片 */
+  .card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .section-title .dot {
+    width: 3px; height: 14px;
+    background: #7C5CFC;
+    border-radius: 2px;
+  }
+
+  /* 选择扫描设备 */
+  .device-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #F7F8FC;
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .device-selector .label {
+    font-size: 14px;
+    color: #8C8C8C;
+  }
+  .device-selector .value {
+    font-size: 14px;
+    color: #1A1A1A;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .device-selector .value svg { width: 14px; height: 14px; color: #BFBFBF; }
+
+  /* 打印范围 */
+  .print-range {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #F7F8FC;
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .print-range .range-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .print-range .range-tag {
+    font-size: 12px;
+    color: #7C5CFC;
+    background: rgba(124,92,252,0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .print-range .range-text {
+    font-size: 14px;
+    color: #1A1A1A;
+    font-weight: 500;
+  }
+  .print-range svg { width: 14px; height: 14px; color: #BFBFBF; }
+
+  /* 留痕内容 - 复选框组 */
+  .checkbox-group { display: flex; flex-direction: column; gap: 12px; }
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .checkbox-box {
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    border: 1.5px solid #D9D9D9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .checkbox-box.checked {
+    background: #7C5CFC;
+    border-color: #7C5CFC;
+  }
+  .checkbox-box.checked svg { display: block; }
+  .checkbox-box svg { display: none; width: 12px; height: 12px; color: #fff; }
+  .checkbox-label {
+    font-size: 14px;
+    color: #333;
+  }
+  .checkbox-desc {
+    font-size: 12px;
+    color: #8C8C8C;
+    margin-top: 1px;
+  }
+
+  /* 新增：整卷正确率 复选框高亮 */
+  .checkbox-item.new-feature {
+    background: #F7F8FC;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 0 -12px;
+    padding-left: 12px;
+  }
+  .new-tag {
+    font-size: 10px;
+    color: #FF6B35;
+    background: rgba(255,107,53,0.08);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+    margin-left: 6px;
+  }
+
+  /* ==================== */
+  /* 按题号选择 - 新功能核心 */
+  /* ==================== */
+  .question-select-section { margin-top: 0; }
+
+  .question-type-card {
+    background: #F7F8FC;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .question-type-card.active {
+    border-color: #7C5CFC;
+  }
+
+  .type-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    cursor: pointer;
+    gap: 10px;
+  }
+
+  .type-checkbox {
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    border: 1.5px solid #D9D9D9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .type-checkbox.checked {
+    background: #7C5CFC;
+    border-color: #7C5CFC;
+  }
+  .type-checkbox.partial {
+    background: #7C5CFC;
+    border-color: #7C5CFC;
+  }
+  .type-checkbox.checked svg,
+  .type-checkbox.partial svg { display: block; }
+  .type-checkbox svg { display: none; width: 12px; height: 12px; color: #fff; }
+  .type-checkbox.partial .check-icon { display: none; }
+  .type-checkbox.partial .minus-icon { display: block; }
+  .type-checkbox .minus-icon { display: none; width: 10px; height: 2px; background: #fff; border-radius: 1px; }
+
+  .type-badge {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .type-badge.blue { background: rgba(124,92,252,0.1); color: #7C5CFC; }
+  .type-badge.green { background: rgba(82,196,26,0.1); color: #52C41A; }
+  .type-badge.orange { background: rgba(250,140,22,0.1); color: #FA8C16; }
+  .type-badge.purple { background: rgba(114,46,209,0.1); color: #722ED1; }
+
+  .type-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1A1A1A;
+    flex: 1;
+  }
+  .type-accuracy {
+    font-size: 12px;
+    color: #8C8C8C;
+    flex-shrink: 0;
+  }
+  .type-accuracy span { color: #7C5CFC; font-weight: 600; }
+
+  .expand-btn {
+    width: 24px; height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+  .expand-btn.expanded { transform: rotate(180deg); }
+  .expand-btn svg { width: 16px; height: 16px; color: #BFBFBF; }
+
+  /* 展开的题号区域 */
+  .question-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 14px;
+  }
+  .question-list.expanded {
+    max-height: 500px;
+    padding: 0 14px 14px;
+  }
+  .question-list-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 0.5px solid #E8E8E8;
+  }
+
+  .q-tag {
+    width: 44px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1.5px solid #E0E0E0;
+    background: #FFFFFF;
+    color: #595959;
+    user-select: none;
+  }
+  .q-tag.selected {
+    background: #7C5CFC;
+    border-color: #7C5CFC;
+    color: #FFFFFF;
+  }
+
+  /* ==================== */
+  /* 底部操作栏 */
+  /* ==================== */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 68px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    padding: 0 16px 12px;
+    gap: 12px;
+    box-shadow: 0 -1px 0 #F0F0F0;
+  }
+  .select-all-btn {
+    font-size: 14px;
+    color: #7C5CFC;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 4px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .print-btn {
+    flex: 1;
+    height: 44px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #9B7FFF, #7C5CFC);
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(124,92,252,0.3);
+  }
+  .print-btn svg { width: 18px; height: 18px; }
+  .print-count {
+    font-size: 12px;
+    background: rgba(255,255,255,0.25);
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 400;
+  }
+
+  /* 预览标签 */
+  .preview-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #8C8C8C;
+    background: #F5F6FA;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-top: 8px;
+  }
+  .preview-label svg { width: 12px; height: 12px; }
+
+  /* 分隔线 */
+  .divider {
+    height: 0.5px;
+    background: #F0F0F0;
+    margin: 4px 0;
+  }
+
+  /* 新功能提示条 */
+  .feature-tip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #8C8C8C;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    background: rgba(124,92,252,0.04);
+    border-radius: 6px;
+    border-left: 3px solid #7C5CFC;
+  }
+  .feature-tip svg { width: 14px; height: 14px; color: #7C5CFC; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4zM13 18h-2v-2h2v2zm0-4H11V9h2v5z"/></svg>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+    <span class="title">留痕打印</span>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="content">
+
+    <!-- 选择扫描设备 -->
+    <div class="card">
+      <div class="section-title">
+        <span class="dot"></span>
+        选择扫描设备
+      </div>
+      <div class="device-selector">
+        <span class="label">当前设备</span>
+        <span class="value">
+          3楼打印机-B2
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <!-- 打印范围 -->
+    <div class="card">
+      <div class="section-title">
+        <span class="dot"></span>
+        打印范围
+      </div>
+      <div class="print-range">
+        <div class="range-info">
+          <span class="range-tag">全部学生</span>
+          <span class="range-text">共 45 人</span>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <!-- 留痕内容 -->
+    <div class="card">
+      <div class="section-title">
+        <span class="dot"></span>
+        留痕内容
+      </div>
+      <div class="checkbox-group">
+        <div class="checkbox-item" onclick="toggleCheckbox(this)">
+          <div class="checkbox-box checked">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <div class="checkbox-label">对错痕迹</div>
+            <div class="checkbox-desc">标记每题对错状态</div>
+          </div>
+        </div>
+        <div class="checkbox-item" onclick="toggleCheckbox(this)">
+          <div class="checkbox-box checked">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <div class="checkbox-label">错误步骤痕迹</div>
+            <div class="checkbox-desc">标记错误解题步骤</div>
+          </div>
+        </div>
+        <!-- 新增：整卷正确率 -->
+        <div class="checkbox-item new-feature" onclick="toggleCheckbox(this)">
+          <div class="checkbox-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <div class="checkbox-label">整卷正确率 <span class="new-tag">NEW</span></div>
+            <div class="checkbox-desc">在试卷右上角显示整卷答题正确率</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 按题号选择 - 新功能核心区域 -->
+    <div class="card question-select-section">
+      <div class="section-title">
+        <span class="dot"></span>
+        按题号选择
+        <span style="font-size:12px; color:#8C8C8C; font-weight:400; margin-left:auto;">已选 <span id="selectedCount" style="color:#7C5CFC; font-weight:600;">0</span> 题</span>
+      </div>
+
+      <div class="feature-tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        点击展开按钮查看题号，勾选题型可批量选择
+      </div>
+
+      <!-- 选择题 -->
+      <div class="question-type-card" id="type-choice">
+        <div class="type-header">
+          <div class="type-checkbox" onclick="event.stopPropagation(); toggleTypeCheck('choice', this)">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+            <div class="minus-icon"></div>
+          </div>
+          <span class="type-badge blue">选择题</span>
+          <span class="type-name">选择题 (1-10题)</span>
+          <span class="type-accuracy">正确率 <span>85%</span></span>
+          <div class="expand-btn" onclick="event.stopPropagation(); toggleExpand('choice', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="question-list" id="list-choice">
+          <div class="question-list-inner">
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">1</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">2</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">3</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">4</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">5</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">6</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">7</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">8</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">9</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'choice')">10</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 填空题 -->
+      <div class="question-type-card" id="type-fill">
+        <div class="type-header">
+          <div class="type-checkbox" onclick="event.stopPropagation(); toggleTypeCheck('fill', this)">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+            <div class="minus-icon"></div>
+          </div>
+          <span class="type-badge green">填空题</span>
+          <span class="type-name">填空题 (11-16题)</span>
+          <span class="type-accuracy">正确率 <span>72%</span></span>
+          <div class="expand-btn" onclick="event.stopPropagation(); toggleExpand('fill', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="question-list" id="list-fill">
+          <div class="question-list-inner">
+            <div class="q-tag" onclick="toggleQTag(this, 'fill')">11</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'fill')">12</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'fill')">13</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'fill')">14</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'fill')">15</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'fill')">16</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 解答题 -->
+      <div class="question-type-card" id="type-solve">
+        <div class="type-header">
+          <div class="type-checkbox" onclick="event.stopPropagation(); toggleTypeCheck('solve', this)">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+            <div class="minus-icon"></div>
+          </div>
+          <span class="type-badge orange">解答题</span>
+          <span class="type-name">解答题 (17-22题)</span>
+          <span class="type-accuracy">正确率 <span>61%</span></span>
+          <div class="expand-btn" onclick="event.stopPropagation(); toggleExpand('solve', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="question-list" id="list-solve">
+          <div class="question-list-inner">
+            <div class="q-tag" onclick="toggleQTag(this, 'solve')">17</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'solve')">18</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'solve')">19</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'solve')">20</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'solve')">21</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'solve')">22</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 附加题 -->
+      <div class="question-type-card" id="type-extra">
+        <div class="type-header">
+          <div class="type-checkbox" onclick="event.stopPropagation(); toggleTypeCheck('extra', this)">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+            <div class="minus-icon"></div>
+          </div>
+          <span class="type-badge purple">附加题</span>
+          <span class="type-name">附加题 (23-24题)</span>
+          <span class="type-accuracy">正确率 <span>45%</span></span>
+          <div class="expand-btn" onclick="event.stopPropagation(); toggleExpand('extra', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="question-list" id="list-extra">
+          <div class="question-list-inner">
+            <div class="q-tag" onclick="toggleQTag(this, 'extra')">23</div>
+            <div class="q-tag" onclick="toggleQTag(this, 'extra')">24</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部操作栏 -->
+  <div class="bottom-bar">
+    <button class="select-all-btn" onclick="toggleSelectAll(this)">全选</button>
+    <button class="print-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      确认打印
+      <span class="print-count" id="printCount">0 题</span>
+    </button>
+  </div>
+</div>
+
+<script>
+// 展开收起
+function toggleExpand(type, btn) {
+  const list = document.getElementById('list-' + type);
+  list.classList.toggle('expanded');
+  btn.classList.toggle('expanded');
+}
+
+// 题号选择
+function toggleQTag(tag, type) {
+  tag.classList.toggle('selected');
+  updateTypeState(type);
+  updateSelectedCount();
+}
+
+// 题型全选/取消
+function toggleTypeCheck(type, checkbox) {
+  const card = document.getElementById('type-' + type);
+  const list = document.getElementById('list-' + type);
+  const tags = list.querySelectorAll('.q-tag');
+  const isChecked = checkbox.classList.contains('checked');
+
+  if (isChecked) {
+    // 取消全选
+    checkbox.classList.remove('checked', 'partial');
+    card.classList.remove('active');
+    tags.forEach(t => t.classList.remove('selected'));
+  } else {
+    // 全选
+    checkbox.classList.remove('partial');
+    checkbox.classList.add('checked');
+    card.classList.add('active');
+    tags.forEach(t => t.classList.add('selected'));
+  }
+  updateSelectedCount();
+}
+
+// 更新题型复选框状态
+function updateTypeState(type) {
+  const card = document.getElementById('type-' + type);
+  const list = document.getElementById('list-' + type);
+  const checkbox = card.querySelector('.type-checkbox');
+  const tags = list.querySelectorAll('.q-tag');
+  const total = tags.length;
+  const selected = list.querySelectorAll('.q-tag.selected').length;
+
+  checkbox.classList.remove('checked', 'partial');
+  card.classList.remove('active');
+
+  if (selected === 0) {
+    // 未选
+  } else if (selected === total) {
+    // 全选
+    checkbox.classList.add('checked');
+    card.classList.add('active');
+  } else {
+    // 部分选
+    checkbox.classList.add('partial');
+    card.classList.add('active');
+  }
+}
+
+// 更新已选数量
+function updateSelectedCount() {
+  const all = document.querySelectorAll('.q-tag.selected').length;
+  document.getElementById('selectedCount').textContent = all;
+  document.getElementById('printCount').textContent = all + ' 题';
+}
+
+// 留痕内容复选框
+function toggleCheckbox(item) {
+  const box = item.querySelector('.checkbox-box');
+  box.classList.toggle('checked');
+}
+
+// 全选/取消全选
+let isAllSelected = false;
+function toggleSelectAll(btn) {
+  isAllSelected = !isAllSelected;
+  const types = ['choice', 'fill', 'solve', 'extra'];
+  types.forEach(type => {
+    const card = document.getElementById('type-' + type);
+    const list = document.getElementById('list-' + type);
+    const checkbox = card.querySelector('.type-checkbox');
+    const tags = list.querySelectorAll('.q-tag');
+
+    if (isAllSelected) {
+      checkbox.classList.remove('partial');
+      checkbox.classList.add('checked');
+      card.classList.add('active');
+      tags.forEach(t => t.classList.add('selected'));
+    } else {
+      checkbox.classList.remove('checked', 'partial');
+      card.classList.remove('active');
+      tags.forEach(t => t.classList.remove('selected'));
+    }
+  });
+  btn.textContent = isAllSelected ? '取消全选' : '全选';
+  updateSelectedCount();
+}
+</script>
+
+</body>
+</html>
