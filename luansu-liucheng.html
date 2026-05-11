@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>试卷乱序二次匹配 - 流程图</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+  background: #f0f2f5;
+  padding: 40px 20px;
+}
+h1 { text-align: center; color: #333; margin-bottom: 8px; font-size: 22px; }
+.subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+.container {
+  max-width: 1100px; margin: 0 auto; background: #fff;
+  border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,.08);
+  padding: 32px 24px; overflow-x: auto;
+}
+.legend {
+  display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+  margin-bottom: 20px; padding: 12px; background: #fafafa; border-radius: 8px;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+.legend-shape { width: 40px; height: 22px; border: 1.5px solid #333; }
+.l-start { background: #e6f0ff; border-radius: 11px; }
+.l-process { background: #e6f7e6; }
+.l-decision { background: #f0e6ff; transform: rotate(45deg); width: 20px; height: 20px; }
+.l-io { background: #fff9e6; transform: skewX(-8deg); }
+.l-note { background: #fff3e0; border-radius: 3px; }
+svg text { font-family: "PingFang SC","Microsoft YaHei",sans-serif; }
+</style>
+</head>
+<body>
+<h1>试卷乱序二次匹配流程图</h1>
+<p class="subtitle">【小程序】批改留痕异常兜底处理 — 试卷乱序二次匹配 [P1]</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-shape l-start"></div><span>开始/结束</span></div>
+  <div class="legend-item"><div class="legend-shape l-process"></div><span>流程步骤</span></div>
+  <div class="legend-item"><div class="legend-shape l-decision"></div><span>判断/决策</span></div>
+  <div class="legend-item"><div class="legend-shape l-io"></div><span>输入/输出/界面</span></div>
+  <div class="legend-item"><div class="legend-shape l-note"></div><span>备注/说明</span></div>
+</div>
+
+<div class="container">
+<svg viewBox="0 0 1060 1760" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#333"/>
+  </marker>
+  <marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#007bff"/>
+  </marker>
+  <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#e53935"/>
+  </marker>
+  <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#999"/>
+  </marker>
+  <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+    <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+  </filter>
+</defs>
+
+<!-- ===== 模块背景 ===== -->
+<!-- 模块一：发现乱序 -->
+<rect x="40" y="15" width="970" height="175" rx="10" fill="#e8f5e9" opacity="0.3"/>
+<rect x="40" y="15" width="160" height="28" rx="5" fill="#007bff"/>
+<text x="120" y="34" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">模块一：发现乱序</text>
+
+<!-- 模块二：二次扫描 -->
+<rect x="40" y="200" width="970" height="295" rx="10" fill="#e3f2fd" opacity="0.3"/>
+<rect x="40" y="200" width="160" height="28" rx="5" fill="#007bff"/>
+<text x="120" y="219" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">模块二：二次扫描</text>
+
+<!-- 模块三：匹配处理 -->
+<rect x="40" y="505" width="970" height="310" rx="10" fill="#f3e5f5" opacity="0.3"/>
+<rect x="40" y="505" width="180" height="28" rx="5" fill="#007bff"/>
+<text x="130" y="524" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">模块三：智能匹配处理</text>
+
+<!-- 模块四：手动补匹配 -->
+<rect x="40" y="825" width="970" height="330" rx="10" fill="#fff8e1" opacity="0.3"/>
+<rect x="40" y="825" width="190" height="28" rx="5" fill="#007bff"/>
+<text x="135" y="844" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">模块四：手动补匹配</text>
+
+<!-- 模块五：打印 -->
+<rect x="40" y="1165" width="970" height="240" rx="10" fill="#e8f5e9" opacity="0.3"/>
+<rect x="40" y="1165" width="180" height="28" rx="5" fill="#007bff"/>
+<text x="130" y="1184" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">模块五：确认并打印</text>
+
+<!-- ===== 节点 ===== -->
+
+<!-- 1. 开始 -->
+<g filter="url(#shadow)">
+  <ellipse cx="500" cy="65" rx="120" ry="26" fill="#e6f0ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="70" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">留痕打印准备阶段</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="91" x2="500" y2="120" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 2. 判断：是否发现乱序 -->
+<g filter="url(#shadow)">
+  <polygon points="500,120 600,170 500,220 400,170" fill="#f0e6ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="166" text-anchor="middle" font-size="12" fill="#333">发现试卷顺序</text>
+  <text x="500" y="182" text-anchor="middle" font-size="12" fill="#333">与扫描顺序不同？</text>
+</g>
+
+<!-- 否 → 正常打印（右侧） -->
+<line x1="600" y1="170" x2="760" y2="170" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="680" y="162" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">否</text>
+<g filter="url(#shadow)">
+  <ellipse cx="840" cy="170" rx="75" ry="24" fill="#e6f0ff" stroke="#333" stroke-width="2"/>
+  <text x="840" y="175" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">正常打印</text>
+</g>
+
+<!-- 是 → 点击乱序重扫 -->
+<line x1="500" y1="220" x2="500" y2="252" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="516" y="240" font-size="12" font-weight="bold" fill="#007bff">是</text>
+
+<!-- 3. IO：点击乱序重扫 -->
+<g filter="url(#shadow)">
+  <polygon points="375,252 635,252 625,298 365,298" fill="#fff9e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="280" text-anchor="middle" font-size="12" fill="#333">教师点击「试卷乱序」按钮</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="298" x2="500" y2="330" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 4. IO：提示放入试卷 -->
+<g filter="url(#shadow)">
+  <polygon points="355,330 655,330 645,386 345,386" fill="#fff9e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="354" text-anchor="middle" font-size="12" fill="#333">系统提示：「请将全部试卷</text>
+  <text x="500" y="374" text-anchor="middle" font-size="12" fill="#333">重新放入打印机」</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="386" x2="500" y2="418" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 5. IO：确认开始扫描 -->
+<g filter="url(#shadow)">
+  <polygon points="375,418 635,418 625,464 365,464" fill="#fff9e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="446" text-anchor="middle" font-size="12" fill="#333">教师点击「开始扫描」</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="464" x2="500" y2="500" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 6. 流程：批量扫描 -->
+<g filter="url(#shadow)">
+  <rect x="350" y="500" width="300" height="48" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="528" text-anchor="middle" font-size="12" fill="#333">打印机对全部试卷进行批量扫描</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="548" x2="500" y2="580" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 7. 流程：智能匹配 -->
+<g filter="url(#shadow)">
+  <rect x="310" y="580" width="380" height="56" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="602" text-anchor="middle" font-size="12" fill="#333">系统基于首次扫描的人工匹配结果</text>
+  <text x="500" y="622" text-anchor="middle" font-size="12" fill="#333">（姓名识别+试卷特征识别）重新匹配</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="636" x2="500" y2="668" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 8. 判断：是否全部匹配成功 -->
+<g filter="url(#shadow)">
+  <polygon points="500,668 610,723 500,778 390,723" fill="#f0e6ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="719" text-anchor="middle" font-size="12" fill="#333">是否全部</text>
+  <text x="500" y="735" text-anchor="middle" font-size="12" fill="#333">匹配成功？</text>
+</g>
+
+<!-- 是 → 自动打印（右侧，直接到模块五） -->
+<line x1="610" y1="723" x2="770" y2="723" stroke="#007bff" stroke-width="1.8" marker-end="url(#ahb)"/>
+<text x="690" y="715" text-anchor="middle" font-size="12" font-weight="bold" fill="#007bff">是</text>
+
+<!-- 备注框 -->
+<g filter="url(#shadow)">
+  <rect x="770" y="698" width="220" height="50" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.5"/>
+  <text x="880" y="718" text-anchor="middle" font-size="12" fill="#2e7d32">全部匹配成功</text>
+  <text x="880" y="736" text-anchor="middle" font-size="12" fill="#2e7d32">系统自动开始打印</text>
+</g>
+
+<!-- 自动打印连到结束 -->
+<path d="M880,748 L880,1290 L645,1290" fill="none" stroke="#007bff" stroke-width="1.5" marker-end="url(#ahb)"/>
+
+<!-- 否 → 展示匹配结果 -->
+<line x1="500" y1="778" x2="500" y2="850" stroke="#e53935" stroke-width="1.8" marker-end="url(#ahr)"/>
+<text x="516" y="818" font-size="12" font-weight="bold" fill="#e53935">否</text>
+
+<!-- 9. 流程：展示匹配结果列表 -->
+<g filter="url(#shadow)">
+  <rect x="310" y="850" width="380" height="65" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="873" text-anchor="middle" font-size="12" fill="#333">展示匹配结果列表</text>
+  <text x="500" y="893" text-anchor="middle" font-size="12" fill="#333">已匹配 → 显示学生姓名</text>
+  <text x="500" y="909" text-anchor="middle" font-size="11" fill="#e53935">未匹配 → 显示「点击指定学生」</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="915" x2="500" y2="947" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 10. 判断：是否有未匹配项 -->
+<g filter="url(#shadow)">
+  <polygon points="500,947 595,997 500,1047 405,997" fill="#f0e6ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="993" text-anchor="middle" font-size="12" fill="#333">存在未匹配</text>
+  <text x="500" y="1009" text-anchor="middle" font-size="12" fill="#333">试卷？</text>
+</g>
+
+<!-- 是 → 手动指定学生 -->
+<line x1="595" y1="997" x2="680" y2="997" stroke="#e53935" stroke-width="1.8" marker-end="url(#ahr)"/>
+<text x="637" y="989" text-anchor="middle" font-size="12" font-weight="bold" fill="#e53935">是</text>
+
+<g filter="url(#shadow)">
+  <rect x="680" y="965" width="260" height="64" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="810" y="989" text-anchor="middle" font-size="12" fill="#bf360c">教师点击「点击指定学生」</text>
+  <text x="810" y="1007" text-anchor="middle" font-size="12" fill="#bf360c">手动选择对应学生</text>
+</g>
+
+<!-- 手动指定后回路 -->
+<path d="M810,1029 L810,1070 L645,1070" fill="none" stroke="#e53935" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#ahr)"/>
+<text x="728" y="1062" font-size="11" fill="#e53935">返回结果列表</text>
+
+<!-- 11. IO：确认打印 -->
+<g filter="url(#shadow)">
+  <rect x="355" y="1070" width="290" height="48" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="1098" text-anchor="middle" font-size="12" fill="#333">未匹配项为0，「确认打印」按钮激活</text>
+</g>
+
+<!-- 否 → 直接到确认打印 -->
+<line x1="500" y1="1047" x2="500" y2="1070" stroke="#007bff" stroke-width="1.8"/>
+<text x="516" y="1062" font-size="12" font-weight="bold" fill="#007bff">否</text>
+
+<!-- 箭头 -->
+<line x1="500" y1="1118" x2="500" y2="1210" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 12. IO：教师确认打印 -->
+<g filter="url(#shadow)">
+  <polygon points="385,1210 625,1210 615,1256 375,1256" fill="#fff9e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="1238" text-anchor="middle" font-size="12" fill="#333">教师点击「确认打印」</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="1256" x2="500" y2="1288" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 13. 流程：按匹配结果打印 -->
+<g filter="url(#shadow)">
+  <rect x="345" y="1288" width="310" height="48" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="1316" text-anchor="middle" font-size="12" fill="#333">系统按匹配结果依次打印留痕内容</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="1336" x2="500" y2="1370" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 14. 结束 -->
+<g filter="url(#shadow)">
+  <ellipse cx="500" cy="1395" rx="100" ry="26" fill="#e6f0ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="1400" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">留痕打印完成</text>
+</g>
+
+<!-- ===== UI细节说明 ===== -->
+<rect x="60" y="1440" width="930" height="120" rx="8" fill="#fafafa" stroke="#e0e0e0" stroke-width="1"/>
+<text x="80" y="1465" font-size="12" font-weight="bold" fill="#555">UI 细节说明：</text>
+<text x="80" y="1485" font-size="11" fill="#666">• 乱序入口：留痕打印页面顶部工具栏增加「试卷乱序」按钮</text>
+<text x="80" y="1503" font-size="11" fill="#666">• 二次扫描引导页：提示文案「请将全部试卷放入打印机」，底部「开始扫描」按钮</text>
+<text x="80" y="1521" font-size="11" fill="#666">• 匹配结果页：列表展示试卷缩略图 + 匹配状态标签 + 学生姓名；底部「确认打印」按钮（存在未匹配项时置灰）</text>
+<text x="80" y="1539" font-size="11" fill="#666">• 未匹配项：显示「点击指定学生」，点击后弹出学生选择列表进行手动匹配</text>
+
+</svg>
+</div>
+</body>
+</html>

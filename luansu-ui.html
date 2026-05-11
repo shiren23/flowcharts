@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>试卷乱序二次匹配 - 界面原型</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+  background: #f0f2f5;
+  padding: 30px 20px;
+}
+h1 { text-align: center; color: #333; margin-bottom: 6px; font-size: 20px; }
+.subtitle { text-align: center; color: #888; font-size: 12px; margin-bottom: 24px; }
+
+.page-label {
+  text-align: center; font-size: 14px; font-weight: bold; color: #007bff;
+  margin: 24px 0 10px; padding: 6px 0; border-bottom: 2px solid #007bff;
+  display: inline-block;
+}
+.pages-row {
+  display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+/* 手机外壳 */
+.phone {
+  width: 375px; background: #fff; border-radius: 36px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.15), inset 0 0 0 2px #e0e0e0;
+  overflow: hidden; position: relative;
+}
+.phone-status-bar {
+  height: 44px; background: #f5f5f5; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 20px; font-size: 12px; color: #333;
+  border-bottom: 1px solid #eee;
+}
+.phone-status-bar .time { font-weight: bold; }
+.phone-status-bar .icons { display: flex; gap: 4px; font-size: 10px; }
+
+/* 导航栏 */
+.nav-bar {
+  height: 48px; background: #fff; display: flex; align-items: center;
+  padding: 0 16px; border-bottom: 1px solid #eee; position: relative;
+}
+.nav-back { font-size: 20px; color: #333; cursor: pointer; width: 30px; }
+.nav-title { flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: #333; margin-right: 30px; }
+
+/* 内容区 */
+.phone-body { padding: 0; min-height: 500px; background: #f8f8f8; }
+
+/* 按钮 */
+.btn {
+  display: inline-block; padding: 10px 24px; border-radius: 8px;
+  font-size: 14px; font-weight: bold; cursor: pointer; border: none;
+}
+.btn-primary { background: #007bff; color: #fff; }
+.btn-danger { background: #e53935; color: #fff; }
+.btn-outline { background: #fff; color: #007bff; border: 1.5px solid #007bff; }
+.btn-disabled { background: #ccc; color: #999; cursor: not-allowed; }
+.btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 6px; }
+.btn-full { display: block; width: calc(100% - 32px); margin: 12px 16px; text-align: center; padding: 14px; font-size: 16px; }
+
+/* 卡片 */
+.card {
+  background: #fff; border-radius: 10px; margin: 12px 16px;
+  box-shadow: 0 1px 6px rgba(0,0,0,.06); overflow: hidden;
+}
+.card-title { font-size: 14px; font-weight: bold; color: #333; padding: 12px 16px 8px; }
+
+/* 工具栏 */
+.toolbar {
+  display: flex; align-items: center; padding: 10px 16px; gap: 8px;
+  background: #fff; border-bottom: 1px solid #eee;
+}
+.toolbar-btn {
+  display: flex; align-items: center; gap: 4px; padding: 6px 12px;
+  border-radius: 6px; background: #fff3e0; border: 1px solid #ff9800;
+  color: #e65100; font-size: 12px; font-weight: bold;
+}
+
+/* 弹窗 */
+.modal-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,.45); display: flex; align-items: center;
+  justify-content: center; z-index: 10;
+}
+.modal-box {
+  background: #fff; border-radius: 14px; width: 310px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,.2);
+}
+.modal-header { padding: 20px 20px 10px; text-align: center; }
+.modal-header .icon { font-size: 36px; margin-bottom: 8px; }
+.modal-header h3 { font-size: 16px; color: #333; }
+.modal-body { padding: 0 20px 16px; text-align: center; font-size: 13px; color: #666; line-height: 1.6; }
+.modal-footer { display: flex; border-top: 1px solid #eee; }
+.modal-footer .btn { flex: 1; border-radius: 0; padding: 14px; font-size: 14px; background: none; }
+.modal-footer .btn + .btn { border-left: 1px solid #eee; }
+
+/* 列表项 */
+.list-item {
+  display: flex; align-items: center; padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0; gap: 12px;
+}
+.list-item:last-child { border-bottom: none; }
+
+/* 状态标签 */
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: bold;
+}
+.tag-success { background: #e8f5e9; color: #2e7d32; }
+.tag-danger { background: #fce4ec; color: #c62828; }
+.tag-warn { background: #fff3e0; color: #e65100; }
+
+/* 缩略图占位 */
+.thumb {
+  width: 40px; height: 52px; background: #f0f0f0; border: 1px solid #ddd;
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: #999;
+}
+
+/* 引导页 */
+.guide-page {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 40px 24px; min-height: 520px; text-align: center;
+}
+.guide-icon { font-size: 60px; margin-bottom: 16px; }
+.guide-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
+.guide-desc { font-size: 13px; color: #666; line-height: 1.7; margin-bottom: 24px; max-width: 280px; }
+.guide-steps { text-align: left; width: 100%; max-width: 280px; margin-bottom: 24px; }
+.guide-steps .step {
+  display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;
+}
+.step-num {
+  width: 22px; height: 22px; border-radius: 50%; background: #007bff;
+  color: #fff; font-size: 12px; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0;
+}
+.step-text { font-size: 13px; color: #555; line-height: 1.5; }
+
+/* 底部安全区 */
+.bottom-bar {
+  position: relative; padding: 12px 16px; background: #fff;
+  border-top: 1px solid #eee;
+}
+
+/* 扫描动画 */
+.scan-bar {
+  height: 3px; background: linear-gradient(90deg, transparent, #007bff, transparent);
+  animation: scan 2s ease-in-out infinite; margin: 16px;
+  border-radius: 2px;
+}
+@keyframes scan {
+  0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; }
+}
+
+.page-section-label {
+  width: 100%; text-align: center; margin: 30px 0 8px;
+}
+.page-section-label span {
+  display: inline-block; background: #007bff; color: #fff;
+  padding: 4px 16px; border-radius: 12px; font-size: 12px; font-weight: bold;
+}
+</style>
+</head>
+<body>
+<h1>试卷乱序二次匹配 — 界面原型图</h1>
+<p class="subtitle">【小程序】批改留痕异常兜底处理 — 试卷乱序二次匹配 [P1]</p>
+
+<!-- ===== 第一行：入口 + 扫描引导 ===== -->
+<div class="page-section-label"><span>场景一：发现乱序 → 点击入口</span></div>
+<div class="pages-row">
+
+  <!-- 页面1：留痕打印页面（含乱序入口） -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">① 留痕打印页（含乱序入口）</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:41</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">留痕打印</span>
+      </div>
+      <div class="toolbar">
+        <div style="flex:1;font-size:13px;color:#333;font-weight:bold;">作业：数学期中测试</div>
+        <div class="toolbar-btn">🔄 试卷乱序</div>
+      </div>
+      <div class="phone-body">
+        <div class="card">
+          <div class="card-title">打印状态</div>
+          <div style="padding:8px 16px 16px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:12px;color:#666;">已扫描试卷</span>
+              <span style="font-size:12px;color:#333;font-weight:bold;">30 份</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:12px;color:#666;">批改完成</span>
+              <span style="font-size:12px;color:#2e7d32;font-weight:bold;">30/30 ✓</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span style="font-size:12px;color:#666;">打印状态</span>
+              <span style="font-size:12px;color:#007bff;font-weight:bold;">待启动</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">打印信息</div>
+          <div style="padding:8px 16px 16px;font-size:12px;color:#666;line-height:1.8;">
+            班级：高一(3)班<br>
+            科目：数学<br>
+            打印份数：30 份
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" style="margin-top:20px;">开始留痕打印</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面2：扫描引导页 -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">② 二次扫描引导页</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:41</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">试卷乱序重扫</span>
+      </div>
+      <div class="phone-body">
+        <div class="guide-page">
+          <div class="guide-icon">📄</div>
+          <div class="guide-title">请将全部试卷放入打印机</div>
+          <div class="guide-desc">
+            系统将对全部试卷进行二次扫描，自动将试卷与批改结果重新匹配。
+          </div>
+          <div class="guide-steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">将全部试卷整理好，放入打印机进纸口</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">点击下方「开始扫描」按钮启动扫描</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">系统将自动匹配试卷与批改结果</div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" style="max-width:280px;margin:0;">开始扫描</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面3：扫描中 -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">③ 扫描进行中</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:42</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">扫描中...</span>
+      </div>
+      <div class="phone-body">
+        <div class="guide-page">
+          <div class="guide-icon" style="font-size:70px;">🖨️</div>
+          <div class="guide-title">正在扫描试卷</div>
+          <div class="guide-desc">请勿移动试卷，等待扫描完成...</div>
+          <div style="width:200px;height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;margin-bottom:12px;">
+            <div style="width:65%;height:100%;background:#007bff;border-radius:4px;"></div>
+          </div>
+          <div style="font-size:13px;color:#666;">已扫描 20/30 份</div>
+          <div class="scan-bar" style="width:200px;margin-top:16px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 第二行：匹配结果 ===== -->
+<div class="page-section-label"><span>场景二：匹配结果展示</span></div>
+<div class="pages-row">
+
+  <!-- 页面4：匹配成功（全部） -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">④ 匹配结果 — 全部成功（自动打印）</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:43</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">匹配结果</span>
+      </div>
+      <div class="phone-body">
+        <!-- 摘要 -->
+        <div style="background:#e8f5e9;padding:16px;text-align:center;">
+          <div style="font-size:32px;">✅</div>
+          <div style="font-size:16px;font-weight:bold;color:#2e7d32;margin-top:6px;">全部匹配成功</div>
+          <div style="font-size:12px;color:#666;margin-top:4px;">30/30 份试卷已匹配</div>
+        </div>
+        <div class="card">
+          <div class="card-title">匹配详情</div>
+          <div class="list-item">
+            <div class="thumb">P1</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:bold;color:#333;">张三 (2024001)</div>
+            </div>
+            <span class="tag tag-success">已匹配</span>
+          </div>
+          <div class="list-item">
+            <div class="thumb">P2</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:bold;color:#333;">李四 (2024002)</div>
+            </div>
+            <span class="tag tag-success">已匹配</span>
+          </div>
+          <div class="list-item">
+            <div class="thumb">P3</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:bold;color:#333;">王五 (2024003)</div>
+            </div>
+            <span class="tag tag-success">已匹配</span>
+          </div>
+          <div style="text-align:center;padding:8px;font-size:12px;color:#999;">
+            ... 共 30 份已匹配
+          </div>
+        </div>
+        <div style="padding:12px 16px;text-align:center;">
+          <div style="font-size:12px;color:#666;margin-bottom:8px;">系统已自动开始留痕打印</div>
+          <div style="width:100%;height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden;">
+            <div style="width:30%;height:100%;background:#007bff;border-radius:3px;"></div>
+          </div>
+          <div style="font-size:11px;color:#999;margin-top:4px;">打印进度 9/30</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面5：匹配结果（部分失败） -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">⑤ 匹配结果 — 存在未匹配项</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:43</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">匹配结果</span>
+      </div>
+      <div class="phone-body">
+        <!-- 摘要 -->
+        <div style="background:#fff3e0;padding:16px;text-align:center;">
+          <div style="font-size:32px;">⚠️</div>
+          <div style="font-size:16px;font-weight:bold;color:#e65100;margin-top:6px;">部分试卷未匹配</div>
+          <div style="font-size:12px;color:#666;margin-top:4px;">28/30 已匹配，2 份需手动指定</div>
+        </div>
+        <div class="card">
+          <div class="card-title">匹配详情 <span style="font-size:11px;color:#999;font-weight:normal;">按状态筛选</span></div>
+          <!-- 筛选标签 -->
+          <div style="display:flex;gap:8px;padding:0 16px 8px;">
+            <span class="tag" style="background:#e3f2fd;color:#1565c0;">全部(30)</span>
+            <span class="tag tag-success">已匹配(28)</span>
+            <span class="tag tag-danger">未匹配(2)</span>
+          </div>
+          <!-- 已匹配项 -->
+          <div class="list-item">
+            <div class="thumb">P1</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:bold;color:#333;">张三 (2024001)</div>
+            </div>
+            <span class="tag tag-success">已匹配</span>
+          </div>
+          <div class="list-item">
+            <div class="thumb">P2</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:bold;color:#333;">李四 (2024002)</div>
+            </div>
+            <span class="tag tag-success">已匹配</span>
+          </div>
+          <!-- 未匹配项 -->
+          <div class="list-item" style="background:#fff8e1;">
+            <div class="thumb" style="border-color:#ff9800;">P15</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:#e65100;font-weight:bold;">未匹配试卷 #15</div>
+              <div style="font-size:11px;color:#999;margin-top:2px;">无法自动识别对应学生</div>
+            </div>
+            <span class="tag tag-warn" style="cursor:pointer;">点击指定学生</span>
+          </div>
+          <div class="list-item" style="background:#fff8e1;">
+            <div class="thumb" style="border-color:#ff9800;">P22</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:#e65100;font-weight:bold;">未匹配试卷 #22</div>
+              <div style="font-size:11px;color:#999;margin-top:2px;">无法自动识别对应学生</div>
+            </div>
+            <span class="tag tag-warn" style="cursor:pointer;">点击指定学生</span>
+          </div>
+        </div>
+        <div class="bottom-bar">
+          <button class="btn btn-disabled btn-full">确认打印（需完成全部匹配）</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面6：手动指定学生弹窗 -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">⑥ 手动指定学生</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:44</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">匹配结果</span>
+      </div>
+      <div class="phone-body" style="position:relative;min-height:580px;">
+        <div style="background:#fff3e0;padding:16px;text-align:center;">
+          <div style="font-size:16px;font-weight:bold;color:#e65100;">部分试卷未匹配</div>
+          <div style="font-size:12px;color:#666;margin-top:4px;">28/30 已匹配，2 份需手动指定</div>
+        </div>
+        <div class="card">
+          <div class="card-title">匹配详情</div>
+          <div class="list-item">
+            <div class="thumb">P1</div>
+            <div style="flex:1;"><div style="font-size:13px;color:#333;">张三 (2024001)</div></div>
+            <span class="tag tag-success">已匹配</span>
+          </div>
+        </div>
+        <!-- 弹窗：选择学生 -->
+        <div class="modal-overlay">
+          <div class="modal-box" style="max-height:400px;">
+            <div class="modal-header">
+              <h3>指定试卷 #15 对应学生</h3>
+            </div>
+            <div style="padding:0 16px;">
+              <div style="background:#f5f5f5;border-radius:8px;padding:8px 12px;margin-bottom:12px;">
+                <span style="font-size:12px;color:#999;">🔍 搜索学生姓名/学号</span>
+              </div>
+            </div>
+            <div style="max-height:220px;overflow-y:auto;">
+              <div class="list-item" style="background:#e3f2fd;">
+                <div style="width:28px;height:28px;border-radius:50%;background:#007bff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">赵</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:bold;color:#333;">赵六 (2024004)</div>
+                </div>
+                <span style="color:#007bff;font-size:14px;">✓</span>
+              </div>
+              <div class="list-item">
+                <div style="width:28px;height:28px;border-radius:50%;background:#666;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">孙</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;color:#333;">孙七 (2024005)</div>
+                </div>
+              </div>
+              <div class="list-item">
+                <div style="width:28px;height:28px;border-radius:50%;background:#666;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">周</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;color:#333;">周八 (2024006)</div>
+                </div>
+              </div>
+              <div class="list-item">
+                <div style="width:28px;height:28px;border-radius:50%;background:#666;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">吴</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;color:#333;">吴九 (2024007)</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" style="color:#999;">取消</button>
+              <button class="btn btn-primary" style="color:#fff;">确认指定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 第三行：匹配完成后打印 ===== -->
+<div class="page-section-label"><span>场景三：匹配完成 → 确认打印</span></div>
+<div class="pages-row">
+
+  <!-- 页面7：全部匹配完成，可确认打印 -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">⑦ 全部匹配完成 → 确认打印</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:45</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">匹配结果</span>
+      </div>
+      <div class="phone-body">
+        <div style="background:#e8f5e9;padding:16px;text-align:center;">
+          <div style="font-size:32px;">✅</div>
+          <div style="font-size:16px;font-weight:bold;color:#2e7d32;margin-top:6px;">全部匹配完成</div>
+          <div style="font-size:12px;color:#666;margin-top:4px;">30/30 份试卷已匹配（含 2 份手动指定）</div>
+        </div>
+        <div class="card">
+          <div class="card-title">匹配详情</div>
+          <div class="list-item">
+            <div class="thumb">P1</div>
+            <div style="flex:1;"><div style="font-size:13px;color:#333;">张三 (2024001)</div></div>
+            <span class="tag tag-success">已匹配</span>
+          </div>
+          <div class="list-item">
+            <div class="thumb" style="border-color:#ff9800;">P15</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:#333;">赵六 (2024004)</div>
+              <div style="font-size:11px;color:#ff9800;">手动指定</div>
+            </div>
+            <span class="tag tag-warn">手动</span>
+          </div>
+          <div class="list-item">
+            <div class="thumb" style="border-color:#ff9800;">P22</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:#333;">周八 (2024006)</div>
+              <div style="font-size:11px;color:#ff9800;">手动指定</div>
+            </div>
+            <span class="tag tag-warn">手动</span>
+          </div>
+          <div style="text-align:center;padding:8px;font-size:12px;color:#999;">
+            ... 共 30 份已匹配
+          </div>
+        </div>
+        <div class="bottom-bar">
+          <button class="btn btn-primary btn-full">确认打印</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面8：打印中 -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">⑧ 留痕打印中</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:46</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">留痕打印</span>
+      </div>
+      <div class="phone-body">
+        <div class="guide-page">
+          <div class="guide-icon" style="font-size:60px;">🖨️</div>
+          <div class="guide-title">正在留痕打印...</div>
+          <div style="width:240px;height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;margin:16px 0;">
+            <div style="width:45%;height:100%;background:#007bff;border-radius:4px;transition:width 0.3s;"></div>
+          </div>
+          <div style="font-size:14px;color:#333;font-weight:bold;">14 / 30</div>
+          <div style="font-size:12px;color:#999;margin-top:6px;">正在打印：孙七 (2024005)</div>
+          <div class="scan-bar" style="width:200px;margin-top:20px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面9：打印完成 -->
+  <div>
+    <div style="text-align:center;font-size:12px;color:#888;margin-bottom:6px;">⑨ 打印完成</div>
+    <div class="phone">
+      <div class="phone-status-bar">
+        <span class="time">9:55</span>
+        <span class="icons">📶 🔋</span>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-back">‹</span>
+        <span class="nav-title">留痕打印</span>
+      </div>
+      <div class="phone-body">
+        <div class="guide-page">
+          <div style="font-size:64px;">🎉</div>
+          <div class="guide-title" style="color:#2e7d32;">打印完成！</div>
+          <div class="guide-desc">
+            全部 30 份试卷已完成留痕打印，可将批改结果分发给学生。
+          </div>
+          <div class="card" style="width:100%;max-width:280px;text-align:left;">
+            <div style="padding:12px 16px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;color:#666;">打印份数</span>
+                <span style="font-size:12px;color:#333;font-weight:bold;">30 份</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;color:#666;">自动匹配</span>
+                <span style="font-size:12px;color:#2e7d32;">28 份</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="font-size:12px;color:#666;">手动指定</span>
+                <span style="font-size:12px;color:#ff9800;">2 份</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" style="max-width:280px;margin-top:16px;">返回首页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
