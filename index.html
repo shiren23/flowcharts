@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>卡纸中断续打 - 流程图</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+  background: #f0f2f5;
+  padding: 40px 20px;
+}
+h1 { text-align: center; color: #333; margin-bottom: 8px; font-size: 22px; }
+.subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+.container {
+  max-width: 1100px; margin: 0 auto; background: #fff;
+  border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,.08);
+  padding: 32px 24px; overflow-x: auto;
+}
+.legend {
+  display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+  margin-bottom: 20px; padding: 12px; background: #fafafa; border-radius: 8px;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+.legend-shape { width: 40px; height: 22px; border: 1.5px solid #333; }
+.l-start { background: #e6f0ff; border-radius: 11px; }
+.l-process { background: #e6f7e6; }
+.l-decision { background: #f0e6ff; transform: rotate(45deg); width: 20px; height: 20px; }
+.l-io { background: #fff9e6; transform: skewX(-8deg); }
+.l-note { background: #fff3e0; border-radius: 3px; }
+svg text { font-family: "PingFang SC","Microsoft YaHei",sans-serif; }
+</style>
+</head>
+<body>
+<h1>卡纸中断续打流程图</h1>
+<p class="subtitle">【小程序】批改留痕异常兜底处理 — 卡纸中断续打 [P0]</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-shape l-start"></div><span>开始/结束</span></div>
+  <div class="legend-item"><div class="legend-shape l-process"></div><span>流程步骤</span></div>
+  <div class="legend-item"><div class="legend-shape l-decision"></div><span>判断/决策</span></div>
+  <div class="legend-item"><div class="legend-shape l-io"></div><span>输入/输出/界面</span></div>
+  <div class="legend-item"><div class="legend-shape l-note"></div><span>强提醒/备注</span></div>
+</div>
+
+<div class="container">
+<svg viewBox="0 0 1060 1520" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#333"/>
+  </marker>
+  <marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#007bff"/>
+  </marker>
+  <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#e53935"/>
+  </marker>
+  <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#999"/>
+  </marker>
+  <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+    <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+  </filter>
+</defs>
+
+<!-- ===== 模块背景区域 ===== -->
+<!-- 模块一：卡纸检测 -->
+<rect x="40" y="15" width="970" height="185" rx="10" fill="#e8f5e9" opacity="0.3"/>
+<rect x="40" y="15" width="110" height="30" rx="5" fill="#007bff"/>
+<text x="95" y="35" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">卡纸检测</text>
+
+<!-- 模块二：提示与处理 -->
+<rect x="40" y="210" width="970" height="290" rx="10" fill="#e3f2fd" opacity="0.3"/>
+<rect x="40" y="210" width="160" height="30" rx="5" fill="#007bff"/>
+<text x="120" y="230" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">卡纸提示与处理</text>
+
+<!-- 模块三：学生选择 -->
+<rect x="40" y="510" width="970" height="400" rx="10" fill="#f3e5f5" opacity="0.3"/>
+<rect x="40" y="510" width="180" height="30" rx="5" fill="#007bff"/>
+<text x="130" y="530" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">继续打印与学生选择</text>
+
+<!-- 模块四：续打执行 -->
+<rect x="40" y="920" width="970" height="360" rx="10" fill="#fff8e1" opacity="0.3"/>
+<rect x="40" y="920" width="180" height="30" rx="5" fill="#007bff"/>
+<text x="130" y="940" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">确认续打与任务发起</text>
+
+<!-- 模块五：完成 -->
+<rect x="40" y="1290" width="970" height="80" rx="10" fill="#e8f5e9" opacity="0.3"/>
+<rect x="40" y="1290" width="110" height="30" rx="5" fill="#007bff"/>
+<text x="95" y="1310" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">打印完成</text>
+
+<!-- ===== 节点 ===== -->
+<!-- 1. 开始 -->
+<g filter="url(#shadow)">
+  <ellipse cx="500" cy="70" rx="120" ry="26" fill="#e6f0ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="75" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">留痕打印进行中</text>
+</g>
+
+<!-- 箭头: 开始 → 判断1 -->
+<line x1="500" y1="96" x2="500" y2="130" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 2. 判断: 是否卡纸 -->
+<g filter="url(#shadow)">
+  <polygon points="500,130 590,175 500,220 410,175" fill="#f0e6ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="179" text-anchor="middle" font-size="12" fill="#333">硬件是否检测</text>
+</g>
+
+<!-- 否 → 打印完成（右侧） -->
+<line x1="590" y1="175" x2="750" y2="175" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="670" y="167" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">否</text>
+<g filter="url(#shadow)">
+  <ellipse cx="830" cy="175" rx="75" ry="24" fill="#e6f0ff" stroke="#333" stroke-width="2"/>
+  <text x="830" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">打印完成</text>
+</g>
+
+<!-- 是 → 下方 -->
+<line x1="500" y1="220" x2="500" y2="262" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="516" y="244" font-size="12" font-weight="bold" fill="#007bff">是</text>
+
+<!-- 3. 流程: 后台清除任务 -->
+<g filter="url(#shadow)">
+  <rect x="355" y="262" width="290" height="46" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="290" text-anchor="middle" font-size="12" fill="#333">后台清除本次卡纸学生留痕打印任务</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="308" x2="500" y2="335" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 4. IO: 弹窗提示 -->
+<g filter="url(#shadow)">
+  <polygon points="365,335 645,335 635,381 355,381" fill="#fff9e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="362" text-anchor="middle" font-size="12" fill="#333">小程序弹出弹窗「检测到卡纸，请清除卡纸后继续」</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="381" x2="500" y2="413" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 5. 流程: 清除卡纸 -->
+<g filter="url(#shadow)">
+  <rect x="360" y="413" width="280" height="46" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="441" text-anchor="middle" font-size="12" fill="#333">教师在打印机端清除卡纸</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="459" x2="500" y2="492" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 6. 判断: 多张纸？ -->
+<g filter="url(#shadow)">
+  <polygon points="500,492 595,545 500,598 405,545" fill="#f0e6ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="541" text-anchor="middle" font-size="12" fill="#333">本次作业</text>
+  <text x="500" y="557" text-anchor="middle" font-size="12" fill="#333">有多张纸？</text>
+</g>
+
+<!-- 是 → 右侧强提醒 -->
+<line x1="595" y1="545" x2="680" y2="545" stroke="#e53935" stroke-width="1.8" marker-end="url(#ahr)"/>
+<text x="637" y="537" text-anchor="middle" font-size="12" font-weight="bold" fill="#e53935">是</text>
+<g filter="url(#shadow)">
+  <rect x="680" y="517" width="260" height="56" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.8" stroke-dasharray="6,3"/>
+  <text x="810" y="539" text-anchor="middle" font-size="12" fill="#bf360c">⚠ 强提醒：需将卡纸学生</text>
+  <text x="810" y="557" text-anchor="middle" font-size="12" fill="#bf360c">未完成留痕作业移出，人工批改</text>
+</g>
+
+<!-- 提醒 → 继续到下方 -->
+<path d="M810,573 L810,625 L645,625" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#ahg)"/>
+
+<!-- 否 → 下方 -->
+<line x1="500" y1="598" x2="500" y2="625" stroke="#007bff" stroke-width="1.8"/>
+<text x="516" y="615" font-size="12" font-weight="bold" fill="#007bff">否</text>
+
+<!-- 7. 流程: 放入试卷 -->
+<g filter="url(#shadow)">
+  <rect x="345" y="625" width="300" height="46" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="495" y="653" text-anchor="middle" font-size="12" fill="#333">教师将剩余未打印试卷重新放入打印机</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="671" x2="500" y2="703" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 8. IO: 点击继续打印 -->
+<g filter="url(#shadow)">
+  <polygon points="390,703 620,703 610,749 380,749" fill="#fff9e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="730" text-anchor="middle" font-size="12" fill="#333">教师点击「继续打印」</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="749" x2="500" y2="781" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 9. 流程: 展示学生列表 -->
+<g filter="url(#shadow)">
+  <rect x="330" y="781" width="340" height="56" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="803" text-anchor="middle" font-size="12" fill="#333">展示学生列表</text>
+  <text x="500" y="821" text-anchor="middle" font-size="12" fill="#333">（已打印 | 卡纸 | 未打印）支持一键勾选</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="837" x2="500" y2="869" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 10. 流程: 教师选择学生 -->
+<g filter="url(#shadow)">
+  <rect x="380" y="869" width="240" height="46" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="897" text-anchor="middle" font-size="12" fill="#333">教师选择学生</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="915" x2="500" y2="950" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 11. 判断: 卡纸状态？ -->
+<g filter="url(#shadow)">
+  <polygon points="500,950 600,1003 500,1056 400,1003" fill="#f0e6ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="999" text-anchor="middle" font-size="12" fill="#333">选中学生是否</text>
+  <text x="500" y="1015" text-anchor="middle" font-size="12" fill="#333">为「卡纸」状态？</text>
+</g>
+
+<!-- 是 → 右侧强提醒 -->
+<line x1="600" y1="1003" x2="680" y2="1003" stroke="#e53935" stroke-width="1.8" marker-end="url(#ahr)"/>
+<text x="640" y="995" text-anchor="middle" font-size="12" font-weight="bold" fill="#e53935">是</text>
+<g filter="url(#shadow)">
+  <rect x="680" y="975" width="260" height="56" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.8" stroke-dasharray="6,3"/>
+  <text x="810" y="997" text-anchor="middle" font-size="12" fill="#bf360c">⚠ 强提醒：卡纸状态作业</text>
+  <text x="810" y="1015" text-anchor="middle" font-size="12" fill="#bf360c">不能继续留痕打印</text>
+</g>
+
+<!-- 提醒 → 回到学生选择（虚线回路） -->
+<path d="M810,975 L810,854 L625,854" fill="none" stroke="#e53935" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#ahr)"/>
+<text x="718" y="846" font-size="11" fill="#e53935">返回重新选择</text>
+
+<!-- 否 → 下方 -->
+<line x1="500" y1="1056" x2="500" y2="1093" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="516" y="1078" font-size="12" font-weight="bold" fill="#007bff">否</text>
+
+<!-- 12. IO: 确认继续 -->
+<g filter="url(#shadow)">
+  <polygon points="385,1093 625,1093 615,1139 375,1139" fill="#fff9e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="1120" text-anchor="middle" font-size="12" fill="#333">教师点击「确认继续」</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="1139" x2="500" y2="1171" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 13. 流程: 发起打印任务 -->
+<g filter="url(#shadow)">
+  <rect x="320" y="1171" width="360" height="56" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="1193" text-anchor="middle" font-size="12" fill="#333">系统新发起打印任务</text>
+  <text x="500" y="1211" text-anchor="middle" font-size="12" fill="#333">继承未打印学生列表，排列顺序一致</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="1227" x2="500" y2="1254" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 14. 流程: 继续打印 -->
+<g filter="url(#shadow)">
+  <rect x="335" y="1254" width="330" height="46" rx="6" fill="#e6f7e6" stroke="#333" stroke-width="1.8"/>
+  <text x="500" y="1282" text-anchor="middle" font-size="12" fill="#333">从选定学生开始继续打印（跳过已打印）</text>
+</g>
+
+<!-- 箭头 -->
+<line x1="500" y1="1300" x2="500" y2="1332" stroke="#333" stroke-width="1.8" marker-end="url(#ah)"/>
+
+<!-- 15. 结束 -->
+<g filter="url(#shadow)">
+  <ellipse cx="500" cy="1358" rx="100" ry="26" fill="#e6f0ff" stroke="#333" stroke-width="2"/>
+  <text x="500" y="1363" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">续打完成</text>
+</g>
+
+<!-- ===== 按钮细节说明（底部图例） ===== -->
+<rect x="60" y="1410" width="930" height="90" rx="8" fill="#fafafa" stroke="#e0e0e0" stroke-width="1"/>
+<text x="80" y="1435" font-size="12" font-weight="bold" fill="#555">UI 细节说明：</text>
+<text x="80" y="1455" font-size="11" fill="#666">• 卡纸提示弹窗：显示「检测到卡纸」，底部「继续打印」「取消任务」按钮，「查看帮助」小按钮</text>
+<text x="80" y="1473" font-size="11" fill="#666">• 学生选择页：列表展示未打印学生（姓名+学号），单选后底部「确认继续」按钮</text>
+<text x="80" y="1491" font-size="11" fill="#666">• 学生状态标签：已打印（灰色）、未打印（绿色）、卡纸（红色），支持一键勾选未打印学生</text>
+
+</svg>
+</div>
+</body>
+</html>
