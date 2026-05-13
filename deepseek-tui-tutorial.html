@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek TUI — Mac 下载与使用教程</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;background:#f5f5f7;color:#1d1d1f;line-height:1.7}
+.hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:80px 20px;text-align:center}
+.hero h1{font-size:36px;font-weight:700;margin-bottom:12px;letter-spacing:-0.5px}
+.hero p{font-size:17px;opacity:.85;max-width:600px;margin:0 auto}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:6px 16px;font-size:13px;margin-top:20px}
+.container{max-width:820px;margin:0 auto;padding:0 24px}
+.toc{background:#fff;border-radius:16px;padding:32px;margin:-40px 24px 40px;box-shadow:0 4px 24px rgba(0,0,0,.06);position:relative;z-index:1}
+.toc h2{font-size:18px;margin-bottom:16px;color:#0f3460}
+.toc ol{padding-left:20px}
+.toc li{margin-bottom:8px;font-size:15px}
+.toc a{color:#0f3460;text-decoration:none;border-bottom:1px dashed #ccc}
+.toc a:hover{color:#e94560;border-bottom-color:#e94560}
+.section{background:#fff;border-radius:16px;padding:36px 32px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.section h2{font-size:22px;color:#0f3460;margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #f0f0f0}
+.section h3{font-size:17px;color:#16213e;margin:24px 0 12px}
+.section p{font-size:15px;color:#444;margin-bottom:14px}
+.section ul,.section ol{padding-left:22px;margin-bottom:14px;font-size:15px;color:#444}
+.section li{margin-bottom:6px}
+.note{background:#fff8e1;border-left:4px solid #ffc107;border-radius:0 8px 8px 0;padding:14px 18px;margin:16px 0;font-size:14px;color:#5d4037}
+.note strong{color:#e65100}
+.tip{background:#e8f5e9;border-left:4px solid #4caf50;border-radius:0 8px 8px 0;padding:14px 18px;margin:16px 0;font-size:14px;color:#2e7d32}
+.warn{background:#fce4ec;border-left:4px solid #e94560;border-radius:0 8px 8px 0;padding:14px 18px;margin:16px 0;font-size:14px;color:#b71c1c}
+
+/* Code block */
+.code-block{position:relative;background:#1e1e2e;border-radius:10px;margin:16px 0;overflow:hidden}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.08)}
+.code-header .lang{font-size:12px;color:#89b4fa;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.copy-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#cdd6f4;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .2s}
+.copy-btn:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3)}
+.copy-btn.copied{background:#4caf50;border-color:#4caf50;color:#fff}
+.code-block pre{padding:16px 20px;overflow-x:auto;font-size:14px;line-height:1.6;color:#cdd6f4}
+.code-block code{font-family:"SF Mono","Fira Code","Cascadia Code",Menlo,monospace}
+
+/* Inline code */
+code.inline{background:#f0f0f5;color:#e94560;padding:2px 7px;border-radius:4px;font-family:"SF Mono","Fira Code",Menlo,monospace;font-size:13px}
+
+/* Step indicator */
+.step{display:flex;align-items:flex-start;gap:14px;margin:20px 0}
+.step-num{flex-shrink:0;width:32px;height:32px;background:linear-gradient(135deg,#0f3460,#16213e);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.step-content{flex:1}
+.step-content h4{font-size:15px;color:#0f3460;margin-bottom:6px}
+.step-content p{font-size:14px;margin-bottom:8px}
+
+/* Table */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:#f5f5f7;text-align:left;padding:10px 14px;font-weight:600;color:#0f3460;border-bottom:2px solid #e0e0e0}
+td{padding:10px 14px;border-bottom:1px solid #f0f0f0}
+tr:hover td{background:#fafafa}
+
+/* Footer */
+.footer{text-align:center;padding:40px 20px;font-size:13px;color:#999}
+
+/* Anchor offset */
+h2[id],h3[id]{scroll-margin-top:20px}
+
+@media(max-width:600px){
+  .hero{padding:50px 16px}
+  .hero h1{font-size:26px}
+  .section{padding:24px 18px}
+  .toc{padding:24px;margin:-30px 12px 30px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>DeepSeek TUI for Mac</h1>
+  <p>面向 Mac 新手的下载与使用教程 —— 从零开始，5 分钟上手终端里的 AI 编程智能体</p>
+  <div class="badge">适用于 macOS 12+ (Intel / Apple Silicon)</div>
+</div>
+
+<div class="container">
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#what">DeepSeek TUI 是什么？</a></li>
+    <li><a href="#prereq">前置准备：获取 API Key</a></li>
+    <li><a href="#install">安装 DeepSeek TUI</a></li>
+    <li><a href="#config">首次配置</a></li>
+    <li><a href="#usage">基本使用</a></li>
+    <li><a href="#shortcuts">常用快捷键</a></li>
+    <li><a href="#modes">三种交互模式</a></li>
+    <li><a href="#faq">常见问题</a></li>
+  </ol>
+</nav>
+
+<!-- ==================== 1. 是什么 ==================== -->
+<section class="section" id="what">
+  <h2>1. DeepSeek TUI 是什么？</h2>
+  <p>DeepSeek TUI 是一个完全运行在<strong>终端</strong>里的编程 AI 智能体。它让 DeepSeek V4 模型直接访问你的工作区：读写文件、运行命令、搜索网页、管理 Git —— 全部通过键盘驱动完成。</p>
+  <div class="tip">
+    <strong>核心特性：</strong>100 万 token 上下文 · 思考模式流式推理 · MCP 协议 · 子智能体并行 · 中文界面支持
+  </div>
+  <p>简单来说：它就像是活在终端里的"Cursor"或"Claude Code"，但驱动模型是 DeepSeek。</p>
+</section>
+
+<!-- ==================== 2. 前置准备 ==================== -->
+<section class="section" id="prereq">
+  <h2>2. 前置准备：获取 API Key</h2>
+  <p>DeepSeek TUI 需要 DeepSeek API Key 才能运行。按以下步骤获取：</p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h4>打开 DeepSeek 开放平台</h4>
+      <p>浏览器访问 <code class="inline">https://platform.deepseek.com</code>，注册并登录账号。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h4>创建 API Key</h4>
+      <p>进入「API Keys」页面，点击「创建 API Key」。复制生成的 Key（以 <code class="inline">sk-</code> 开头），<strong>只会显示一次</strong>。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h4>充值（如需要）</h4>
+      <p>新注册账号通常有免费额度。如果没有，在「充值」页面充值即可（最低 10 元）。</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>提示：</strong>DeepSeek V4 Flash 价格非常便宜（输入 $0.14/百万 token），日常编程辅助一天花费不到 1 元。
+  </div>
+</section>
+
+<!-- ==================== 3. 安装 ==================== -->
+<section class="section" id="install">
+  <h2>3. 安装 DeepSeek TUI</h2>
+  <p>Mac 上推荐以下两种方式，<strong>选其中一种即可</strong>：</p>
+
+  <h3>方式一：Homebrew 安装（推荐）</h3>
+  <p>如果你已经安装了 Homebrew，这是最简单的方式：</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>brew tap Hmbown/deepseek-tui
+brew install deepseek-tui</code></pre>
+  </div>
+
+  <div class="tip">
+    <strong>没有 Homebrew？</strong>先安装它：打开终端，粘贴下面的命令执行：
+  </div>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+  </div>
+
+  <h3>方式二：npm 安装</h3>
+  <p>如果你电脑上有 Node.js（前端开发者通常已有）：</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>npm install -g deepseek-tui</code></pre>
+  </div>
+
+  <div class="note">
+    <strong>中国大陆用户加速：</strong>使用镜像源安装更快：
+  </div>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>npm install -g deepseek-tui --registry=https://registry.npmmirror.com</code></pre>
+  </div>
+
+  <h3>方式三：直接下载</h3>
+  <p>不想装任何包管理器？直接下载二进制文件：</p>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h4>打开 Releases 页面</h4>
+      <p>访问 <code class="inline">https://github.com/Hmbown/DeepSeek-TUI/releases</code></p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h4>选择对应版本</h4>
+      <p>Apple Silicon (M1/M2/M3/M4) 下载 <code class="inline">deepseek-tui-*-aarch64-apple-darwin.tar.gz</code></p>
+      <p>Intel Mac 下载 <code class="inline">deepseek-tui-*-x86_64-apple-darwin.tar.gz</code></p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h4>解压并移动到 PATH</h4>
+    </div>
+  </div>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code># 解压（替换为实际文件名）
+tar xzf deepseek-tui-*-aarch64-apple-darwin.tar.gz
+
+# 移动到用户可执行目录
+sudo mv deepseek /usr/local/bin/
+sudo mv deepseek-tui /usr/local/bin/</code></pre>
+  </div>
+
+  <h3>验证安装</h3>
+  <p>安装完成后，运行以下命令确认：</p>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>deepseek --version</code></pre>
+  </div>
+  <p>看到版本号输出即安装成功。</p>
+</section>
+
+<!-- ==================== 4. 首次配置 ==================== -->
+<section class="section" id="config">
+  <h2>4. 首次配置</h2>
+
+  <h3>方式一：交互式配置（推荐）</h3>
+  <p>直接启动 DeepSeek TUI，首次运行会自动引导你输入 API Key：</p>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>deepseek</code></pre>
+  </div>
+  <p>按提示粘贴你的 API Key，回车即可。Key 会保存在 <code class="inline">~/.deepseek/config.toml</code>，以后无需重复输入。</p>
+
+  <h3>方式二：命令行配置</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>deepseek auth set --provider deepseek</code></pre>
+  </div>
+  <p>按提示输入 Key 即可。</p>
+
+  <h3>方式三：环境变量</h3>
+  <p>如果你不想保存到文件，也可以每次通过环境变量传入：</p>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>export DEEPSEEK_API_KEY="sk-你的密钥"
+deepseek</code></pre>
+  </div>
+  <p>想永久生效，把 <code class="inline">export</code> 那行加到 <code class="inline">~/.zshrc</code> 文件末尾：</p>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>echo 'export DEEPSEEK_API_KEY="sk-你的密钥"' >> ~/.zshrc
+source ~/.zshrc</code></pre>
+  </div>
+
+  <h3>切换为中文界面</h3>
+  <p>DeepSeek TUI 原生支持中文。如果首次启动是英文，在 TUI 内：</p>
+  <ol>
+    <li>在输入框输入 <code class="inline">/config</code>，按 Enter 打开配置面板</li>
+    <li>选择 <strong>Edit locale</strong>，输入 <code class="inline">zh-Hans</code>，按 Enter</li>
+  </ol>
+  <p>或直接编辑配置文件：</p>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal — config.toml</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code># ~/.deepseek/config.toml
+[tui]
+locale = "zh-Hans"</code></pre>
+  </div>
+
+  <h3>验证配置是否正确</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>deepseek doctor</code></pre>
+  </div>
+  <p>这条命令会检查你的安装状态、API Key 配置和网络连通性。全部显示绿色即配置成功。</p>
+</section>
+
+<!-- ==================== 5. 基本使用 ==================== -->
+<section class="section" id="usage">
+  <h2>5. 基本使用</h2>
+
+  <h3>启动 TUI</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code># 进入你的项目目录
+cd ~/my-project
+
+# 启动 DeepSeek TUI
+deepseek</code></pre>
+  </div>
+
+  <h3>一次性提问（不进入 TUI）</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>deepseek "解释一下这个函数的作用"</code></pre>
+  </div>
+
+  <h3>指定模型</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code># 使用 Flash 模型（快速、便宜）
+deepseek --model deepseek-v4-flash "快速总结这个文件"
+
+# 使用 Pro 模型（更强推理）
+deepseek --model deepseek-v4-pro "帮我重构这个模块"
+
+# 让 TUI 自动选择模型（推荐）
+deepseek --model auto</code></pre>
+  </div>
+
+  <h3>会话管理</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code># 列出已保存的会话
+deepseek sessions
+
+# 恢复最近一次会话
+deepseek resume --last
+
+# 按会话 ID 恢复
+deepseek resume &lt;SESSION_ID&gt;</code></pre>
+  </div>
+
+  <h3>在 TUI 内部附加文件</h3>
+  <p>在输入框中使用 <code class="inline">@文件路径</code> 将文件内容发送给 AI：</p>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">TUI 输入框</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>@src/main.py 帮我找出这段代码里的 bug</code></pre>
+  </div>
+
+  <h3>实用命令速查</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>命令</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">deepseek doctor</code></td><td>检查安装和配置状态</td></tr>
+        <tr><td><code class="inline">deepseek models</code></td><td>列出可用模型</td></tr>
+        <tr><td><code class="inline">deepseek sessions</code></td><td>查看历史会话</td></tr>
+        <tr><td><code class="inline">deepseek update</code></td><td>检查并安装更新</td></tr>
+        <tr><td><code class="inline">deepseek --yolo</code></td><td>自动批准所有工具调用（谨慎使用）</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 6. 快捷键 ==================== -->
+<section class="section" id="shortcuts">
+  <h2>6. 常用快捷键</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>快捷键</th><th>功能</th></tr></thead>
+      <tbody>
+        <tr><td><kbd>Tab</kbd></td><td>补全命令 / 切换模式</td></tr>
+        <tr><td><kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>切换推理强度：关闭 → 高 → 最大</td></tr>
+        <tr><td><kbd>F1</kbd></td><td>打开帮助面板（可搜索）</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>返回 / 关闭当前面板</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>K</kbd></td><td>命令面板</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>恢复历史会话</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>R</kbd></td><td>搜索提示历史</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>暂存当前草稿</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 7. 模式 ==================== -->
+<section class="section" id="modes">
+  <h2>7. 三种交互模式</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>模式</th><th>说明</th><th>适用场景</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Plan</strong> 🔍</td>
+          <td>只读调查模式。AI 只探索和制定计划，不做任何修改</td>
+          <td>了解代码库、分析问题</td>
+        </tr>
+        <tr>
+          <td><strong>Agent</strong> 🤖</td>
+          <td>默认模式。AI 可以执行操作，但每步需要你确认</td>
+          <td>日常编程、修改代码</td>
+        </tr>
+        <tr>
+          <td><strong>YOLO</strong> ⚡</td>
+          <td>自动批准模式。AI 自主执行所有操作，无需确认</td>
+          <td>可信项目、批量重构</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>在 TUI 中按 <kbd>Tab</kbd> 键可在模式之间切换。</p>
+  <div class="warn">
+    <strong>注意：</strong>YOLO 模式下 AI 会自动执行命令和修改文件，请确保在可信工作区中使用。
+  </div>
+</section>
+
+<!-- ==================== 8. FAQ ==================== -->
+<section class="section" id="faq">
+  <h2>8. 常见问题</h2>
+
+  <h3>Q：提示"command not found: deepseek"</h3>
+  <p>安装后终端找不到命令，通常是因为安装路径没加入 PATH。尝试重新打开终端窗口，或执行：</p>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code>source ~/.zshrc</code></pre>
+  </div>
+
+  <h3>Q：API Key 怎么更换？</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code># 清除旧 Key
+deepseek auth clear --provider deepseek
+
+# 重新设置
+deepseek auth set --provider deepseek</code></pre>
+  </div>
+
+  <h3>Q：如何更新到最新版本？</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang">Terminal</span>
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+    </div>
+    <pre><code># 使用内置更新命令
+deepseek update
+
+# 或使用包管理器更新
+brew upgrade deepseek-tui    # Homebrew
+npm update -g deepseek-tui   # npm</code></pre>
+  </div>
+
+  <h3>Q：Mac 上终端推荐用哪个？</h3>
+  <p>推荐以下终端应用（都免费）：</p>
+  <ul>
+    <li><strong>iTerm2</strong> — 最流行的 Mac 终端替代品，功能强大</li>
+    <li><strong>Warp</strong> — 现代 AI 终端，界面美观</li>
+    <li><strong>Terminal.app</strong> — 系统自带，开箱即用</li>
+  </ul>
+
+  <h3>Q：收费吗？</h3>
+  <p>DeepSeek TUI 本身<strong>完全免费开源</strong>。但你调用 DeepSeek API 会产生费用，V4 Flash 模型非常便宜，日常使用每天不到 1 元。新注册账号通常有免费额度。</p>
+
+  <h3>Q：与 Claude Code 相比有什么区别？</h3>
+  <p>两者都是终端里的 AI 编程智能体，核心区别是驱动模型不同。DeepSeek TUI 使用 DeepSeek V4 模型，价格更低；Claude Code 使用 Anthropic 的 Claude 模型。功能上各有特色，可以根据需求选择或搭配使用。</p>
+</section>
+
+</div>
+
+<footer class="footer">
+  <p>基于 <a href="https://github.com/Hmbown/DeepSeek-TUI" style="color:#0f3460">DeepSeek TUI</a> 开源项目 · 教程文档 · 最后更新 2026-05</p>
+</footer>
+
+<script>
+function copyCode(btn){
+  const code=btn.closest('.code-block').querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent='已复制';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='复制';btn.classList.remove('copied')},1500);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=code;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent='已复制';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='复制';btn.classList.remove('copied')},1500);
+  });
+}
+</script>
+</body>
+</html>
