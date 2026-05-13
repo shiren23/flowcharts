@@ -59,6 +59,45 @@ tr:hover td{background:#fafafa}
 /* Footer */
 .footer{text-align:center;padding:40px 20px;font-size:13px;color:#999}
 
+/* Finder flow visual */
+.finder-flow{display:flex;flex-direction:column;gap:20px;margin:20px 0;padding:24px;background:#fafafa;border-radius:12px;border:1px solid #e8e8ed}
+.flow-step{display:flex;align-items:flex-start;gap:16px}
+.flow-arrow{display:flex;align-items:center;justify-content:center;color:#0f3460;font-size:22px;padding:0 0 0 38px;height:28px}
+.flow-icon{flex-shrink:0;width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.flow-icon.finder{background:#dceefb;color:#007aff}
+.flow-icon.rightclick{background:#fff3e0;color:#f57c00}
+.flow-icon.terminal{background:#1e1e2e;color:#4ade80}
+.flow-icon.tui{background:#e8f5e9;color:#4caf50}
+.flow-detail{flex:1}
+.flow-detail h4{font-size:15px;color:#0f3460;margin-bottom:4px}
+.flow-detail p{font-size:13px;color:#666;margin-bottom:0}
+.flow-detail .highlight{background:#fff3cd;padding:2px 8px;border-radius:4px;font-weight:600;color:#856404;font-size:13px}
+/* Simulated Finder window */
+.sim-finder{background:#fff;border-radius:8px;border:1px solid #d1d1d6;overflow:hidden;max-width:400px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.sim-finder-bar{background:linear-gradient(180deg,#e8e8ed,#d6d6db);padding:8px 12px;display:flex;align-items:center;gap:6px}
+.sim-finder-dot{width:10px;height:10px;border-radius:50%}
+.sim-finder-dot.r{background:#ff5f57}.sim-finder-dot.y{background:#febc2e}.sim-finder-dot.g{background:#28c840}
+.sim-finder-body{padding:12px}
+.sim-folder{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;font-size:13px;color:#333;background:transparent;cursor:default;transition:background .15s}
+.sim-folder:hover{background:#e8f5e9}
+.sim-folder-icon{font-size:22px}
+/* Simulated context menu */
+.sim-ctx{position:relative;display:inline-block;margin-top:-4px}
+.sim-ctx-menu{background:#fff;border-radius:8px;border:1px solid #d1d1d6;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px 0;min-width:240px;font-size:13px}
+.sim-ctx-item{padding:6px 14px;color:#333;display:flex;align-items:center;gap:8px}
+.sim-ctx-item.active{background:#0f3460;color:#fff;border-radius:4px;margin:0 4px}
+/* Simulated terminal */
+.sim-term{background:#1e1e2e;border-radius:8px;overflow:hidden;max-width:480px;margin:10px 0;font-family:"SF Mono","Fira Code",Menlo,monospace;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.sim-term-bar{background:#2d2d3f;padding:8px 12px;display:flex;align-items:center;gap:6px}
+.sim-term-dot{width:10px;height:10px;border-radius:50%}
+.sim-term-dot.r{background:#ff5f57}.sim-term-dot.y{background:#febc2e}.sim-term-dot.g{background:#28c840}
+.sim-term-title{color:#888;font-size:12px;margin-left:8px}
+.sim-term-body{padding:14px 16px;color:#cdd6f4;line-height:1.8}
+.sim-term-body .prompt{color:#4ade80}
+.sim-term-body .cmd{color:#89b4fa;font-weight:600}
+.sim-term-body .cursor{display:inline-block;width:8px;height:15px;background:#4ade80;animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{50%{opacity:0}}
+
 /* Anchor offset */
 h2[id],h3[id]{scroll-margin-top:20px}
 
@@ -321,6 +360,81 @@ cd ~/my-project
 
 # 启动 DeepSeek TUI
 deepseek</code></pre>
+  </div>
+
+  <h3>从访达快速启动（推荐新手使用）</h3>
+  <p>如果你不熟悉终端命令，可以直接在 Mac 的访达（Finder）中操作：</p>
+
+  <div class="finder-flow">
+    <!-- Step 1: Open Finder -->
+    <div class="flow-step">
+      <div class="flow-icon finder">📁</div>
+      <div class="flow-detail">
+        <h4>第一步：打开访达，找到你的项目文件夹</h4>
+        <p>在桌面或侧边栏中找到你想要用 DeepSeek 处理的文件夹。</p>
+        <!-- Simulated Finder -->
+        <div class="sim-finder">
+          <div class="sim-finder-bar">
+            <div class="sim-finder-dot r"></div>
+            <div class="sim-finder-dot y"></div>
+            <div class="sim-finder-dot g"></div>
+          </div>
+          <div class="sim-finder-body">
+            <div class="sim-folder"><span class="sim-folder-icon">📂</span> my-project</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- Step 2: Right click -->
+    <div class="flow-step">
+      <div class="flow-icon rightclick">🖱️</div>
+      <div class="flow-detail">
+        <h4>第二步：右键点击文件夹</h4>
+        <p>在弹出的菜单中找到 <span class="highlight">「在新终端窗口打开」</span> 并点击。</p>
+        <!-- Simulated context menu -->
+        <div class="sim-ctx">
+          <div class="sim-ctx-menu">
+            <div class="sim-ctx-item">显示简介</div>
+            <div class="sim-ctx-item">快速查看</div>
+            <div class="sim-ctx-item">移到废纸篓</div>
+            <div class="sim-ctx-item" style="border-top:1px solid #e0e0e0;margin-top:4px;padding-top:10px">服务 ▸</div>
+            <div class="sim-ctx-item active">⬛ 在新终端窗口打开</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">↓</div>
+
+    <!-- Step 3: Type deepseek -->
+    <div class="flow-step">
+      <div class="flow-icon terminal">⬛</div>
+      <div class="flow-detail">
+        <h4>第三步：在打开的终端窗口中输入命令</h4>
+        <p>终端会自动定位到该文件夹目录，直接输入 <code class="inline">deepseek</code> 并回车即可启动。</p>
+        <!-- Simulated terminal -->
+        <div class="sim-term">
+          <div class="sim-term-bar">
+            <div class="sim-term-dot r"></div>
+            <div class="sim-term-dot y"></div>
+            <div class="sim-term-dot g"></div>
+            <span class="sim-term-title">Terminal — my-project</span>
+          </div>
+          <div class="sim-term-body">
+            <div><span class="prompt">user@mac</span> <span style="color:#f9e2af">my-project</span> % <span class="cmd">deepseek</span></div>
+            <div style="color:#a6e3a1;margin-top:8px">✓ DeepSeek TUI v0.8.x — 欢迎使用</div>
+            <div style="color:#888;margin-top:4px">▎</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>没有「在新终端窗口打开」选项？</strong>这是 macOS 的内置服务功能。如果看不到，请确保你的 Mac 系统版本为 macOS 12 或更高。也可以在<strong>系统设置 → 隐私与安全性 → 辅助功能</strong>中检查终端权限。
   </div>
 
   <h3>一次性提问（不进入 TUI）</h3>
