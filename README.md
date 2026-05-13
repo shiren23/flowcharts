@@ -25,6 +25,12 @@
 | 留痕打印新界面 | 留痕打印页面优化原型 | [查看](https://shiren23.github.io/flowcharts/liuhen-dayin.html) |
 | 留痕优化流程图 | 留痕打印优化流程 | [查看](https://shiren23.github.io/flowcharts/liuhen-liucheng.html) |
 
+### DeepSeek TUI 教程
+
+| 文件 | 说明 | 链接 |
+|------|------|------|
+| DeepSeek TUI Mac 教程 | 面向 Mac 新手的下载与使用教程 | [查看](https://shiren23.github.io/flowcharts/deepseek-tui-tutorial.html) |
+
 ## 项目结构
 
 ```
@@ -33,7 +39,8 @@
 ├── luansu-liucheng.html    # 试卷乱序二次匹配流程图
 ├── luansu-ui.html          # 试卷乱序二次匹配界面原型
 ├── liuhen-dayin.html       # 留痕打印新界面原型
-├── liuhen-liucheng.html    # 留痕优化流程图
+├── liuhen-liucheng.html        # 留痕优化流程图
+├── deepseek-tui-tutorial.html  # DeepSeek TUI Mac 使用教程
 └── .github/workflows/
     └── static.yml          # GitHub Pages 部署工作流
 ```
