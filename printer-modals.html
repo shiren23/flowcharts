@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>留痕打印 - 弹窗界面</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  /* 手机外框 */
+  .phone-frame {
+    width: 375px;
+    height: 720px;
+    background: #FFFFFF;
+    border-radius: 40px;
+    border: 8px solid #1a1a1a;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 状态栏 */
+  .status-bar {
+    height: 44px;
+    padding: 12px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1a;
+    flex-shrink: 0;
+  }
+  .status-bar .time { font-size: 14px; font-weight: 700; }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons svg { width: 16px; height: 16px; }
+
+  /* 导航栏 */
+  .nav-bar {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 0.5px solid #EEEEEE;
+    flex-shrink: 0;
+  }
+  .nav-bar .back-btn {
+    position: absolute;
+    left: 16px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-bar .back-btn svg { width: 20px; height: 20px; color: #333; }
+  .nav-bar .title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  /* 页面内容区 */
+  .page-content {
+    flex: 1;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #FFFFFF;
+  }
+
+  /* 打印机状态卡片 */
+  .printer-card {
+    background: #FFFFFF;
+    border: 1px solid #F0F0F0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .printer-icon {
+    width: 48px;
+    height: 48px;
+    background: #F3EFFF;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .printer-icon svg { width: 26px; height: 26px; color: #7B61FF; }
+  .printer-info { flex: 1; }
+  .printer-name { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
+  .printer-status { font-size: 13px; color: #999; }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-right: 4px;
+  }
+  .status-dot.online { background: #52C41A; }
+  .status-dot.busy { background: #FAAD14; }
+
+  /* 操作按钮区 */
+  .action-area { margin-top: 8px; }
+  .action-btn {
+    width: 100%;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .action-btn:active { opacity: 0.7; }
+  .action-btn.primary {
+    background: #7B61FF;
+    color: #FFFFFF;
+  }
+  .action-btn.primary svg { width: 20px; height: 20px; }
+
+  /* 弹窗遮罩 */
+  .modal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 32px;
+    z-index: 10;
+  }
+
+  /* 弹窗卡片 */
+  .modal-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    width: 100%;
+    overflow: hidden;
+    animation: modalIn 0.25s ease-out;
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .modal-body {
+    padding: 32px 24px 24px;
+    text-align: center;
+  }
+  .modal-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    background: #F3EFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-icon svg { width: 28px; height: 28px; color: #7B61FF; }
+  .modal-icon.warning svg { color: #FAAD14; }
+
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+  }
+  .modal-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .modal-actions {
+    display: flex;
+    border-top: 0.5px solid #F0F0F0;
+  }
+  .modal-btn {
+    flex: 1;
+    height: 52px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .modal-btn:active { background: #F5F5F5; }
+  .modal-btn.cancel {
+    color: #999;
+    border-right: 0.5px solid #F0F0F0;
+  }
+  .modal-btn.confirm {
+    color: #7B61FF;
+  }
+  .modal-btn.single {
+    color: #7B61FF;
+    width: 100%;
+  }
+
+  /* 页面标题标签 */
+  .label-tag {
+    text-align: center;
+    padding: 16px 0 0;
+    font-size: 13px;
+    color: #999;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== 弹窗一：佳能打印机 ==================== -->
+<div class="phone-frame">
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4zM13 18h-2v-2h2v2zm0-4H11V9h2v5z"/></svg>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+    <span class="title">留痕打印</span>
+  </div>
+
+  <!-- 页面内容 -->
+  <div class="page-content">
+    <!-- 打印机卡片 -->
+    <div class="printer-card">
+      <div class="printer-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"/>
+          <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+      </div>
+      <div class="printer-info">
+        <div class="printer-name">佳能打印机</div>
+        <div class="printer-status"><span class="status-dot online"></span>已连接 · 就绪</div>
+      </div>
+    </div>
+
+    <!-- 操作提示 -->
+    <div style="text-align:center; color:#999; font-size:13px; margin-top:24px;">请将试卷放入打印机进纸口</div>
+
+    <!-- 弹窗 -->
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-body">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div class="modal-title">未完成批改任务</div>
+          <div class="modal-desc">检测到未完成的批改任务，请选择是否继续批改</div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn cancel">取消任务</button>
+          <button class="modal-btn confirm">继续批改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 弹窗二：汉图打印机 ==================== -->
+<div class="phone-frame">
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4zM13 18h-2v-2h2v2zm0-4H11V9h2v5z"/></svg>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+    <span class="title">留痕打印</span>
+  </div>
+
+  <!-- 页面内容 -->
+  <div class="page-content">
+    <!-- 打印机卡片 -->
+    <div class="printer-card">
+      <div class="printer-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"/>
+          <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+      </div>
+      <div class="printer-info">
+        <div class="printer-name">汉图打印机</div>
+        <div class="printer-status"><span class="status-dot busy"></span>已连接 · 打印中</div>
+      </div>
+    </div>
+
+    <!-- 操作提示 -->
+    <div style="text-align:center; color:#999; font-size:13px; margin-top:24px;">请将试卷放入打印机进纸口</div>
+
+    <!-- 弹窗 -->
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-body">
+          <div class="modal-icon warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="modal-title">打印机忙碌中</div>
+          <div class="modal-desc">打印机正在忙碌中，请两分钟后重新放入试卷</div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn single">稍后处理</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
